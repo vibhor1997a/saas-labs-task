@@ -151,7 +151,7 @@ function sendSMS(options, cb) {
         cb(new TypeError('invalid options!'));
     }
     else {
-        $.ajax('/api/customers/sendSMS', {
+        $.ajax('/api/customers/sendSMS.php', {
             data: JSON.stringify({
                 messageType,
                 customerID,
