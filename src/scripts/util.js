@@ -123,7 +123,6 @@ function handleCustomers(options, cb) {
                 $(`#${customerID}>div>.sms-custom`).on('click', function () {
                     $('#custom-sms-modal').modal('toggle');
                     const message = $('#sms-custom-msg').val();
-                    $('#sms-custom-msg').val('');
                     $('#send-cust-btn').on('click', () => {
                         sendSMS({
                             messageType: 'custom',
@@ -135,6 +134,7 @@ function handleCustomers(options, cb) {
                             }
                             else {
                                 $('#custom-sms-modal').modal('toggle');
+                                $('#sms-custom-msg').val('');
                             }
                         });
                     });
