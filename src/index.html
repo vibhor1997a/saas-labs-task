@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/mystyle.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class='row'>
+            <h1 class='mx-auto text-info'>Dashboard</h1>
+        </div>
+        <!--Card content-->
+        <div class="card-body mt-3">
+            <div class="row m-2">
+                <div class="mx-auto">
+                    <input type="checkbox" id="mobile-filter">
+                    <span class="h5">Show customers who have registered their mobile numbers only</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+
+                <table id="cust-data" class="table text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Customer #</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="row m-3">
+                <span class="mx-auto" id="page-loc">
+                    <span id="start-rec-no"></span>
+                    -
+                    <span id="end-rec-no"></span>
+                    &nbsp;of&nbsp;
+                    <span id="total-rec"></span>
+                </span>
+            </div>
+            <div class="row">
+                <select id="no-of-rows">
+                    <option value="10">10 rows</option>
+                    <option value="20">20 rows</option>
+                    <option value="50">50 rows</option>
+                    <option value="100">100 rows</option>
+                </select>
+                <nav class="mx-auto">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Previous</a>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+            </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+        <script src="scripts/load.js"></script>
+</body>
+
+</html>

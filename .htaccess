@@ -1,11 +1,17 @@
 RewriteEngine on
+DirectoryIndex index.php index.html
+DirectorySlash On
 
 # Rewrite /foo/bar to /foo/bar.php
-RewriteRule ^([^.?]+)$ %{REQUEST_URI}.php [L]
 
-# Return 404 if original request is /foo/bar.php
-RewriteCond %{THE_REQUEST} "^[^ ]* .*?\.php[? ].*$"
-RewriteRule .* - [L,R=404]
+# RewriteRule (.*) - [L]
+# RewriteRule ^([^.?]+)$ %{REQUEST_URI}.php [L]
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule !.*\.php$ %{REQUEST_FILENAME}.php [QSA,L]
+
+RewriteCond %{REQUEST_URI} !src/
+RewriteRule (.*) /src/$1 [L]
 
 # NOTE! FOR APACHE ON WINDOWS: Add [NC] to RewriteCond like this:
 # RewriteCond %{THE_REQUEST} "^[^ ]* .*?\.php[? ].*$" [NC]
