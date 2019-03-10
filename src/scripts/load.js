@@ -36,7 +36,7 @@ function setDataIntoTable(customers, pageNo, pageSize) {
 
 // get cust data from the api acc to limit and offset
 function getCustomers(limit, offset, cb) {
-    $.ajax('/api/customers', {
+    $.ajax('/api/customers/', {
         data: {
             limit: limit,
             offset: offset

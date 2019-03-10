@@ -4,14 +4,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //load dependencies
 
     include dirname(dirname(__DIR__)) . '/customer.php';
-    include dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php';
+    $rootDir = dirname(dirname(dirname(__DIR__)));
+    include $rootDir . '/vendor/autoload.php';
 
     //load environment variables
-    try {
-        $dotenv = Dotenv\Dotenv::create(dirname(dirname(dirname(__DIR__))));
+    $dotenv = Dotenv\Dotenv::create($rootDir);
+    if (file_exists($rootDir . '.env')) {
         $dotenv->load();
-    } catch (ErrorException $err) {
-        echo ($err);
     }
 
     $con = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PWD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);

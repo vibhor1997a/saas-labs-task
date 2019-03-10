@@ -4,7 +4,9 @@ require __DIR__ . '/vendor/autoload.php';
 
 //load environment variables
 $dotenv = Dotenv\Dotenv::create(__DIR__);
-$dotenv->load();
+if (file_exists(__DIR__ . '.env')) {
+    $dotenv->load();
+}
 
 $con = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PWD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);
 
