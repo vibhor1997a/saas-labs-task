@@ -18,9 +18,9 @@
         </div>
         <!--Card content-->
         <div class="card-body mt-3">
-            <div class="row m-2">
+            <div class="row m-2" id="mobile-filter">
                 <div class="mx-auto">
-                    <input type="checkbox" id="mobile-filter">
+                    <input type="checkbox" id="mobile-filter-chkb">
                     <span class="h5">Show customers who have registered their mobile numbers only</span>
                 </div>
             </div>
@@ -53,17 +53,24 @@
             </div>
             <div class="row">
                 <select id="no-of-rows">
-                    <option value="10">10 rows</option>
-                    <option value="20">20 rows</option>
-                    <option value="50">50 rows</option>
-                    <option value="100">100 rows</option>
+                    <option value="10" selected>10 Customers</option>
+                    <option value="20">20 Customers</option>
+                    <option value="50">50 Customers</option>
                 </select>
+            </div>
+            <div class="row">
                 <nav class="mx-auto">
                     <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#">Previous</a>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
+                        <li class="page-item disabled" id="pg-first">
+                            <button class="page-link">First</button>
+                        </li>
+                        <li class="page-item disabled" id="pg-prev">
+                            <button class="page-link">Previous</button>
+                        <li class="page-item" id="pg-next">
+                            <button class="page-link">Next</button>
+                        </li>
+                        <li class="page-item" id="pg-last">
+                            <button class="page-link">Last</button>
                         </li>
                     </ul>
                 </nav>
@@ -78,7 +85,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-        <script src="scripts/load.js"></script>
+        <script src="scripts/util.js"></script>
+        <script src="scripts/dashboard.js"></script>
 </body>
 
 </html>

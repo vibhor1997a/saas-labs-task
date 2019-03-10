@@ -9,15 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     //load environment variables
     $dotenv = Dotenv\Dotenv::create($rootDir);
-    if (file_exists($rootDir . '.env')) {
+    if (file_exists($rootDir . '/.env')) {
         $dotenv->load();
     }
 
     $con = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PWD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);
 
     if ($con->connect_error) {
-        echo ($con->connect_error);
         http_response_code(500);
+        echo ($con->connect_error);
     }
 
     $url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -26,13 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $limit = is_numeric($query['limit']) ? $query['limit'] : 100;
     $offset = is_numeric($query['offset']) ? $query['offset'] : 0;
+    $filterCondition = $query['phoneExists'] == 'true' ? ' AND CUSTOMERS.phone IS NOT NULL' : '';
 
     // get by id
-    $condition = is_numeric($query['id']) ? " and CUSTOMERS.id='" . $query['id'] . "'" : "";
+    $condition = is_numeric($query['id']) ? " AND CUSTOMERS.id='" . $query['id'] . "'" : "";
 
     $customersQuery = "SELECT *
     , CASE WHEN CUSTOMERS.sent_message IS NULL THEN 0 ELSE 1 END AS is_sms_sent FROM CUSTOMERS,ADDRESSES
-    WHERE CUSTOMERS.id=ADDRESSES.customer_id" . $condition . " LIMIT " . $offset . "," . $limit;
+    WHERE CUSTOMERS.id=ADDRESSES.customer_id" . $condition . $filterCondition . " LIMIT " . $offset . "," . $limit;
     $res = $con->query($customersQuery);
 
     $custArr = array();
@@ -43,7 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         array_push($custArr, $cust);
     }
 
-    $customersCountQuery = "SELECT COUNT(*) as count FROM CUSTOMERS";
+    $filterCondition = substr($filterCondition, 4);
+    $cond = $filterCondition == '' ? '' : ' WHERE' . $filterCondition;
+    $customersCountQuery = "SELECT COUNT(*) as count FROM CUSTOMERS" . $cond;
     $res = $con->query($customersCountQuery);
 
     while ($row = $res->fetch_assoc()) {

@@ -14,15 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //load environment variables
     $dotenv = Dotenv\Dotenv::create($rootDir);
-    if (file_exists($rootDir . '.env')) {
+    if (file_exists($rootDir . '/.env')) {
         $dotenv->load();
     }
 
     $con = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PWD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);
 
     if ($con->connect_error) {
-        echo ($con->connect_error);
         http_response_code(500);
+        echo ($con->connect_error);
     }
 
     $data = json_decode(file_get_contents('php://input'));

@@ -1,25 +1,3 @@
-$(document).ready(() => {
-
-    let pageNo = 1;
-    let pageSize = 10;
-
-    let pageStart = getCurrentCustomerNo(pageNo, pageSize, 0);
-    let pageEnd = getCurrentCustomerNo(pageNo, pageSize, pageSize - 1);
-
-    getCustomers(10, 0, (err, data) => {
-        if (err) {
-            alert('Something went wrong!');
-        }
-        else {
-            $('#total-rec').text(data.totalCustomersCount);
-            $('#start-rec-no').text(pageStart);
-            $('#end-rec-no').text(pageEnd);
-            $('#page-loc').show();
-            setDataIntoTable(data.customers, pageNo, pageSize);
-        }
-    });
-});
-
 // get the # of current customer
 function getCurrentCustomerNo(pageNo, pageSize, index) {
     return (pageNo - 1) * pageSize + Number(index) + 1;
@@ -35,11 +13,15 @@ function setDataIntoTable(customers, pageNo, pageSize) {
 }
 
 // get cust data from the api acc to limit and offset
-function getCustomers(limit, offset, cb) {
+function getCustomers(options, cb) {
+    let { limit, offset, phoneExists } = options;
+    limit = limit || 10;
+    offset = offset || 0;
     $.ajax('/api/customers/', {
         data: {
-            limit: limit,
-            offset: offset
+            limit,
+            offset,
+            phoneExists
         },
         method: 'GET',
         success: (data) => {
@@ -69,4 +51,29 @@ function getTableRow(customer, count) {
     ${customer.address.streetAddress || ''} ${customer.address.city || ''} ${(customer.address.postalCode || '')} ${customer.address.country || ''}
     </td>
     </tr>`;
+}
+
+/**
+ * Get the cust from api and set the in table
+ * @param {*} options 
+ * @param {*} cb 
+ */
+function handleCustomers(options, cb) {
+    getCustomers({
+        limit: options.pageSize,
+        offset: options.pageStart - 1,
+        phoneExists: options.phoneExists
+    }, (err, data) => {
+        if (err) {
+            cb(err);
+        }
+        else {
+            $('#total-rec').text(data.totalCustomersCount);
+            $('#start-rec-no').text(options.pageStart);
+            $('#end-rec-no').text(options.pageEnd);
+            $('#page-loc').show();
+            setDataIntoTable(data.customers, options.pageNo, options.pageSize);
+            cb(undefined, data);
+        }
+    });
 }
