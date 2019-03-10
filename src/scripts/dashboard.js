@@ -34,10 +34,10 @@ $(document).ready(() => {
 
     //
     $('#no-of-rows').on('change', function () {
+        pageNo = 1;
         pageSize = Number($(this).val());
         pageStart = getCurrentCustomerNo(pageNo, pageSize, 0);
         pageEnd = getCurrentCustomerNo(pageNo, pageSize, pageSize - 1);
-        pageNo = 1;
         handleCustomers({
             phoneExists,
             pageStart,
