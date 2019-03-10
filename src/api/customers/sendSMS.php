@@ -23,16 +23,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($con->connect_error) {
         http_response_code(500);
         echo ($con->connect_error);
+        die();
     }
 
     $data = json_decode(file_get_contents('php://input'));
 
-    if (!$data->messageType || !($data == 'custom' || $data == 'promo' || $data == 'delivered' || $data == 'shipped')) {
+    if (!$data->messageType || !($data->messageType == 'custom' || $data->messageType == 'promo' || $data->messageType == 'delivered' || $data->messageType == 'shipped')) {
         http_response_code(400);
         echo (json_encode(array('error' => 'Invalid messageType, should be one of promo|delivered|shipped|custom')));
+        die();
     } else if (!$data->customerID) {
         http_response_code(400);
         echo (json_encode(array('error' => 'Invalid customerID, Please pass the customerID')));
+        die();
     } else {
         if ($data->messageType == 'promo') {
             $message = 'Hi, use coupon OFF30 to get flat 30% off on all our range.';
@@ -43,17 +46,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $message = $data->message;
             if (!$message) {
+                http_response_code(400);
                 echo (json_encode(array('error' => 'Invalid message, need to pass message parameter with custom messageType')));
+                die();
             }
         }
-    }
-
-    $dbQuery = "UPDATE CUSTOMERS SET sent_message=" . wrapInSingleQuotes($data->message) . "WHERE id=" . wrapInSingleQuotes($data->customerID);
-    $res = $con->query($customersQuery);
-    if (!res) {
-        http_response_code(500);
-        echo (json_encode(array('error' => 'Internal Server Error')));
-    } else {
-        echo (json_encode(array('message' => 'SMS sent successfully')));
+        $dbQuery = "UPDATE CUSTOMERS SET sent_message=" . wrapInSingleQuotes($message) . " WHERE id=" . wrapInSingleQuotes($data->customerID) . "AND phone IS NOT NULL";
+        $res = $con->query($dbQuery);
+        if (!res) {
+            http_response_code(409);
+            echo (json_encode(array('error' => 'Can\'t send SMS, already sent')));
+            die();
+        } else {
+            echo (json_encode(array('message' => 'SMS sent successfully')));
+            die();
+        }
     }
 }

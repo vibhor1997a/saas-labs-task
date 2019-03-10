@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if ($con->connect_error) {
         http_response_code(500);
         echo ($con->connect_error);
+        die();
     }
 
     $url = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -58,4 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $resp['customerCount'] = count($custArr);
     $resp['totalCustomersCount'] = $totalCustomersCount;
     echo (json_encode($resp));
+    die();
+} else {
+    http_response_code(404);
 }

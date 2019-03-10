@@ -34,7 +34,7 @@ function getCustomers(options, cb) {
 }
 
 function getTableRow(customer, count) {
-    return `<tr id="${customer.id}">
+    return `<tr>
     <td>
     ${count}
     </td>
@@ -47,10 +47,24 @@ function getTableRow(customer, count) {
     <td>
     ${customer.phone || 'unknown'}
     </td>
+    <td class="dropdown" id="${customer.id}">
+    ${smsCheck(customer)}
+    </td>
     <td>
     ${customer.address.streetAddress || ''} ${customer.address.city || ''} ${(customer.address.postalCode || '')} ${customer.address.country || ''}
     </td>
     </tr>`;
+}
+
+function smsCheck(customer) {
+    return !customer.phone ? '<span class="text-danger">Phone not registered</span>' : customer.isSMSSent ? `<span class="text-success">SMS sent</span>` : `
+    <button class="btn btn-primary send-sms" data-toggle="dropdown">Send SMS</button>
+        <div class="dropdown-menu">
+            <button class="dropdown-item sms-shipped" type="button">Order Shipped</button>
+            <button class="dropdown-item sms-delivered" type="button">Order Delivered</button>
+            <button class="dropdown-item sms-promo" type="button">Promotion</button>
+            <button class="dropdown-item sms-custom" type="button">Custom Message</button>
+    </div >`;
 }
 
 /**
@@ -73,7 +87,87 @@ function handleCustomers(options, cb) {
             $('#end-rec-no').text(options.pageEnd);
             $('#page-loc').show();
             setDataIntoTable(data.customers, options.pageNo, options.pageSize);
+            $('')
+            $('.send-sms').on('click', function () {
+                const customerID = $(this).parent().attr('id');
+                $(`#${customerID}>div>.sms-shipped`).on('click', function () {
+                    sendSMS({
+                        messageType: 'shipped',
+                        customerID
+                    }, (err, data) => {
+                        if (err) {
+                            alert('Something went wrong!');
+                        }
+                    });
+                });
+                $(`#${customerID}>div>.sms-delivered`).on('click', function () {
+                    sendSMS({
+                        messageType: 'delivered',
+                        customerID
+                    }, (err, data) => {
+                        if (err) {
+                            alert('Something went wrong!');
+                        }
+                    });
+                });
+                $(`#${customerID}>div>.sms-promo`).on('click', function () {
+                    sendSMS({
+                        messageType: 'promo',
+                        customerID
+                    }, (err, data) => {
+                        if (err) {
+                            alert('Something went wrong!');
+                        }
+                    });
+                });
+                $(`#${customerID}>div>.sms-custom`).on('click', function () {
+                    $('#custom-sms-modal').modal('toggle');
+                    const message = $('#sms-custom-msg').val();
+                    $('#sms-custom-msg').val('');
+                    $('#send-cust-btn').on('click', () => {
+                        sendSMS({
+                            messageType: 'custom',
+                            customerID,
+                            message
+                        }, (err, data) => {
+                            if (err) {
+                                alert('Something went wrong!');
+                            }
+                            else {
+                                $('#custom-sms-modal').modal('toggle');
+                            }
+                        });
+                    });
+                });
+            });
             cb(undefined, data);
         }
     });
+}
+
+function sendSMS(options, cb) {
+    const { messageType, customerID, message } = options;
+    if (!(messageType && customerID)) {
+        cb(new TypeError('invalid options!'));
+    }
+    else {
+        $.ajax('/api/customers/sendSMS', {
+            data: JSON.stringify({
+                messageType,
+                customerID,
+                message
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            success: data => {
+                $(`#${customerID}`).html(`<span class="text-success">SMS sent</span>`);
+                cb(undefined, data);
+            },
+            error: err => {
+                cb(err);
+            }
+        });
+    }
 }
