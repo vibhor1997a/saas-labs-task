@@ -122,8 +122,8 @@ function handleCustomers(options, cb) {
                 });
                 $(`#${customerID}>div>.sms-custom`).on('click', function () {
                     $('#custom-sms-modal').modal('toggle');
-                    const message = $('#sms-custom-msg').val();
                     $('#send-cust-btn').on('click', () => {
+                        const message = $('#sms-custom-msg').val();
                         sendSMS({
                             messageType: 'custom',
                             customerID,
